@@ -1,0 +1,212 @@
+// ─────────────────────────────────────────────
+//  KMC eWorks Smart Query — Module Config
+// ─────────────────────────────────────────────
+
+export const API_BASE_URL = '/api/smart-query'
+
+export const ENDPOINTS = {
+  ask:       `${API_BASE_URL}/ask`,
+  status:    `${API_BASE_URL}/status`,
+  exportCsv: `${API_BASE_URL}/export-csv`,
+  health:    '/api/actuator/health',
+}
+
+export const MODULE_CONFIG = {
+  MARKET: {
+    key: 'MARKET',
+    label: 'Market Module',
+    shortLabel: 'Market',
+    schema: 'mrkt_kmc2_data',
+    queryIdPrefix: 'MKT',
+    icon: 'market',
+    navColor: '#3949AB',
+    accentColor: '#3949AB',
+    accentLight: '#E8EAF6',
+    accentBorder: '#5C6BC0',
+    cardBorder: '#5C6BC0',
+    tagBg: '#E8EAF6',
+    tagText: '#283593',
+    tableStats: [
+      { value: '30', label: 'Tables', icon: 'clipboard' },
+      { value: '42', label: 'Examples', icon: 'lightbulb' },
+      { value: '33', label: 'Rules', icon: 'ruler' },
+    ],
+    filters: [
+      { key: 'marketCode', label: 'Market Code',  placeholder: 'e.g. 101',      icon: 'market' },
+      { key: 'phaseCode',  label: 'Phase',         placeholder: 'e.g. 01',       icon: 'mapPin' },
+      { key: 'blockCode',  label: 'Block',         placeholder: 'e.g. A',        icon: 'layers' },
+      { key: 'stallId',    label: 'Stall ID',      placeholder: 'e.g. 1010105',  icon: 'hash' },
+      { key: 'wardNo',     label: 'Ward No',       placeholder: 'e.g. 5',        icon: 'mapPin' },
+      { key: 'finYear',    label: 'Fin. Year',     placeholder: 'e.g. 2526',     icon: 'calendar' },
+    ],
+    suggestions: [
+      { text: 'Show all active stalls in market 101', icon: 'barChart' },
+      { text: 'How many stalls are pending payment?', icon: 'coins' },
+      { text: 'List stalls in ward 5 with demand status', icon: 'clipboard' },
+      { text: 'Total stallage collection for year 2526', icon: 'trendUp' },
+      { text: 'Find all bad debt stalls in phase 01', icon: 'alert' },
+      { text: 'Show electricity connections for block A', icon: 'zap' },
+    ],
+  },
+
+  ENGINEERING: {
+    key: 'ENGINEERING',
+    label: 'Engineering Module',
+    shortLabel: 'Engineering',
+    schema: 'public',
+    queryIdPrefix: 'ENGG',
+    icon: 'engineering',
+    navColor: '#3949AB',
+    accentColor: '#5C35B5',
+    accentLight: '#EDE7F6',
+    accentBorder: '#7E57C2',
+    cardBorder: '#7E57C2',
+    tagBg: '#EDE7F6',
+    tagText: '#4527A0',
+    tableStats: [
+      { value: '34', label: 'Tables', icon: 'clipboard' },
+      { value: '44', label: 'Examples', icon: 'lightbulb' },
+      { value: '34', label: 'Rules', icon: 'ruler' },
+    ],
+    filters: [
+      { key: 'fileNo',    label: 'File No',      placeholder: 'e.g. FILE-2025-001', icon: 'folder' },
+      { key: 'tenderNo',  label: 'Tender No',    placeholder: 'e.g. TND-001',       icon: 'fileText' },
+      { key: 'poNumber',  label: 'PO Number',    placeholder: 'e.g. PO-001',        icon: 'package' },
+      { key: 'deptCode',  label: 'Department',   placeholder: 'e.g. CIVIL',         icon: 'building' },
+      { key: 'borough',   label: 'Borough',      placeholder: 'e.g. NORTH',         icon: 'mapPin' },
+      { key: 'wardNo',    label: 'Ward No',      placeholder: 'e.g. 5',             icon: 'mapPin' },
+    ],
+    suggestions: [
+      { text: 'Show all active work estimates for CIVIL', icon: 'clipboard' },
+      { text: 'List pending tenders with bidding open date', icon: 'calendar' },
+      { text: 'Show PO details for contractor XYZ', icon: 'package' },
+      { text: 'Which invoices are unpaid for PO-001?', icon: 'receipt' },
+      { text: 'Show DPR approvals pending at EE level', icon: 'clock' },
+      { text: 'List all bid winners for engineering tenders', icon: 'trophy' },
+    ],
+  },
+
+  FINANCE: {
+    key:          'FINANCE',
+    label:        'Finance Module',
+    shortLabel:   'Finance',
+    schema:       'fin_kmc_data',
+    queryIdPrefix:'FIN',
+    icon:         'finance',
+    navColor:     '#00796B',
+    accentColor:  '#00796B',
+    accentLight:  '#E0F4F1',
+    accentBorder: '#26A69A',
+    cardBorder:   '#26A69A',
+    tagBg:        '#E0F4F1',
+    tagText:      '#004D40',
+    tableStats: [
+      { value: '28', label: 'Tables',   icon: 'clipboard' },
+      { value: '36', label: 'Examples', icon: 'lightbulb' },
+      { value: '29', label: 'Rules',    icon: 'ruler'     },
+    ],
+    filters: [
+      { key: 'finYear',    label: 'Fin. Year',   placeholder: 'e.g. 2526',        icon: 'calendar'  },
+      { key: 'deptCode',   label: 'Department',  placeholder: 'e.g. ACCOUNTS',    icon: 'building'  },
+      { key: 'voucherNo',  label: 'Voucher No',  placeholder: 'e.g. VCH-2025-001',icon: 'fileText'  },
+      { key: 'headOfAcc',  label: 'Head of A/c', placeholder: 'e.g. 1101',        icon: 'hash'      },
+      { key: 'wardNo',     label: 'Ward No',     placeholder: 'e.g. 5',           icon: 'mapPin'    },
+    ],
+    suggestions: [
+      { text: 'Show total budget vs actual expenditure for 2526', icon: 'barChart'   },
+      { text: 'List all pending vouchers above ₹1 lakh',          icon: 'coins'      },
+      { text: 'Show department-wise expenditure summary',          icon: 'clipboard'  },
+      { text: 'Which heads of account exceeded budget this year?', icon: 'alert'      },
+      { text: 'Total receipts collected in Q3 2526',               icon: 'receipt'    },
+      { text: 'Show salary disbursement for accounts dept',        icon: 'trendUp'    },
+    ],
+  },
+
+  MUNICIPAL_SECRETARY: {
+    key:          'MUNICIPAL_SECRETARY',
+    label:        'Municipal Secretary',
+    shortLabel:   'Mun. Secy.',
+    schema:       'munsec_kmc_data',
+    queryIdPrefix:'MNS',
+    icon:         'municipal',
+    navColor:     '#C62828',
+    accentColor:  '#C62828',
+    accentLight:  '#FFEBEE',
+    accentBorder: '#E53935',
+    cardBorder:   '#E53935',
+    tagBg:        '#FFEBEE',
+    tagText:      '#B71C1C',
+    tableStats: [
+      { value: '22', label: 'Tables',   icon: 'clipboard' },
+      { value: '31', label: 'Examples', icon: 'lightbulb' },
+      { value: '25', label: 'Rules',    icon: 'ruler'     },
+    ],
+    filters: [
+      { key: 'meetingNo',   label: 'Meeting No',   placeholder: 'e.g. GBM-2025-04', icon: 'calendar'  },
+      { key: 'resolutionNo',label: 'Resolution No',placeholder: 'e.g. RES-101',     icon: 'fileText'  },
+      { key: 'committee',   label: 'Committee',    placeholder: 'e.g. STANDING',    icon: 'layers'    },
+      { key: 'finYear',     label: 'Fin. Year',    placeholder: 'e.g. 2526',        icon: 'calendar'  },
+      { key: 'status',      label: 'Status',       placeholder: 'e.g. PENDING',     icon: 'hash'      },
+    ],
+    suggestions: [
+      { text: 'List all resolutions passed in April 2025',           icon: 'clipboard'  },
+      { text: 'Show pending agenda items for standing committee',     icon: 'clock'      },
+      { text: 'How many GBM meetings were held in 2526?',            icon: 'calendar'   },
+      { text: 'Find resolutions related to budget approval',         icon: 'coins'      },
+      { text: 'Show councillor-wise attendance for last 5 meetings', icon: 'barChart'   },
+      { text: 'List motions raised in ward 5',                       icon: 'mapPin'     },
+    ],
+  },
+
+  PARK_SQUARE: {
+    key:          'PARK_SQUARE',
+    label:        'Parks & Squares',
+    shortLabel:   'Parks',
+    schema:       'park_kmc_data',
+    queryIdPrefix:'PRK',
+    icon:         'park',
+    navColor:     '#558B2F',
+    accentColor:  '#558B2F',
+    accentLight:  '#F1F8E9',
+    accentBorder: '#7CB342',
+    cardBorder:   '#7CB342',
+    tagBg:        '#F1F8E9',
+    tagText:      '#33691E',
+    tableStats: [
+      { value: '18', label: 'Tables',   icon: 'clipboard' },
+      { value: '24', label: 'Examples', icon: 'lightbulb' },
+      { value: '20', label: 'Rules',    icon: 'ruler'     },
+    ],
+    filters: [
+      { key: 'parkCode',  label: 'Park Code',  placeholder: 'e.g. PKR-001',   icon: 'mapPin'    },
+      { key: 'wardNo',    label: 'Ward No',    placeholder: 'e.g. 5',         icon: 'mapPin'    },
+      { key: 'borough',   label: 'Borough',    placeholder: 'e.g. NORTH',     icon: 'layers'    },
+      { key: 'finYear',   label: 'Fin. Year',  placeholder: 'e.g. 2526',      icon: 'calendar'  },
+      { key: 'parkType',  label: 'Park Type',  placeholder: 'e.g. SQUARE',    icon: 'hash'      },
+    ],
+    suggestions: [
+      { text: 'List all parks under ward 5 with maintenance status', icon: 'clipboard'  },
+      { text: 'Show parks with pending renovation work',              icon: 'clock'      },
+      { text: 'Total area of all squares in north borough',           icon: 'barChart'   },
+      { text: 'Which parks have active contracts this year?',         icon: 'package'    },
+      { text: 'Show gardening staff deployment by park',             icon: 'trendUp'    },
+      { text: 'Find parks where lighting maintenance is overdue',    icon: 'zap'        },
+    ],
+  },
+}
+
+export const PIPELINE_STEPS = [
+  { id: 1, label: 'Schema Context',  sub: 'Loading module knowledge',  icon: 'bookOpen' },
+  { id: 2, label: 'AI Processing',   sub: 'NVIDIA NIM AI Model',      icon: 'cpu' },
+  { id: 3, label: 'SQL Validation',  sub: 'Security & safety checks',  icon: 'shield' },
+  { id: 4, label: 'DB Execution',    sub: 'PostgreSQL live query',      icon: 'zap' },
+]
+
+export const WORKFLOW_CARDS = [
+  { key: 'estimate',   label: 'Estimate',       icon: 'fileText',    color: '#3949AB', lightColor: '#E8EAF6' },
+  { key: 'tender',     label: 'Tender',         icon: 'clipboard',   color: '#7B1FA2', lightColor: '#F3E5F5' },
+  { key: 'po',         label: 'Purchase Order', icon: 'package',     color: '#C62828', lightColor: '#FFEBEE' },
+  { key: 'invoice',    label: 'Invoice',        icon: 'receipt',     color: '#2E7D32', lightColor: '#E8F5E9' },
+  { key: 'receipt',    label: 'Receipt',        icon: 'circleCheck', color: '#00838F', lightColor: '#E0F7FA' },
+  { key: 'annexure',   label: 'Annexure',       icon: 'fileCode',   color: '#E65100', lightColor: '#FFF3E0' },
+]
