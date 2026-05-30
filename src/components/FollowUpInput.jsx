@@ -59,8 +59,7 @@ export default function FollowUpInput({ onSubmit, loading, previousQuestion, acc
     <div style={{ padding: '0 28px 20px' }}>
       <div style={{ ...glass, borderRadius: 16 }}>
         {/* Glass overlays */}
-        <div style={{ position:'absolute', top:0, left:0, right:0, height:'45%', background:'radial-gradient(ellipse 90% 100% at 50% 0%, rgba(255,255,255,0.16) 0%, transparent 100%)', borderRadius:'16px 16px 0 0', pointerEvents:'none', zIndex:1 }} />
-        <div style={{ position:'absolute', top:0, right:0, bottom:0, width:2, background:'linear-gradient(180deg, rgba(255,0,200,0.12) 0%, rgba(0,220,255,0.12) 100%)', mixBlendMode: isDark ? 'screen' : 'multiply', pointerEvents:'none', zIndex:2, borderRadius:'0 16px 16px 0' }} />
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:7, background:'linear-gradient(180deg, rgba(255,255,255,0.75) 0%, transparent 100%)', borderRadius:'16px 16px 0 0', pointerEvents:'none', zIndex:3 }} />
 
         <div style={{ position:'relative', zIndex:3 }}>
           {/* Context strip */}

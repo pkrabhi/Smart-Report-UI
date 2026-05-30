@@ -145,6 +145,26 @@ function buildCsvFilename(question, queryId) {
 }
 
 // ── Export PDF ──────────────────────────────
+const PDF_STOP_WORDS = new Set([
+  'what','how','many','show','me','get','list','find','give','display','fetch',
+  'all','the','a','an','of','in','for','to','with','and','or','is','are',
+  'was','were','be','been','have','has','had','do','does','did','will','would',
+  'could','should','that','this','these','those','from','by','on','at','as',
+  'into','during','before','after','between','each','every','some','no','not',
+  'where','which','who','when','why','per','its','their','our','my','your',
+])
+
+function questionToSlug(question, maxWords = 6) {
+  const words = question
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .filter(w => w.length > 1 && !PDF_STOP_WORDS.has(w))
+    .slice(0, maxWords)
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+  return words.length > 0 ? words.join('_') : 'Report'
+}
+
 export async function exportPdf({ apiBase, columns, data, question, moduleCode, queryId, source, executionTimeMs, generatedSql }) {
   const res = await fetchWithTimeout(
     `${apiBase}/export-pdf`,
@@ -177,7 +197,9 @@ export async function exportPdf({ apiBase, columns, data, question, moduleCode, 
   const url  = URL.createObjectURL(blob)
   const a    = document.createElement('a')
   a.href     = url
-  a.download = `KMC_SmartQuery_${queryId || 'report'}.pdf`
+  const slug  = questionToSlug(question || queryId || 'Report')
+  const date  = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+  a.download  = `KMC_${slug}_${date}.pdf`
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)

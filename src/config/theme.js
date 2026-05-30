@@ -26,31 +26,31 @@ export function hueShift(hue, delta) {
 }
 
 // ─── Glass panel ────────────────────────────────────────
-// PERFORMANCE NOTE:
-//   backdrop-filter: blur() is GPU-expensive.
-//   Dark mode  → full blur (colorful background benefits from blur)
-//   Light mode → no blur (white/light background; blur costs GPU but renders nothing)
+// Dark mode: Claude Code style — black bg, dark panels, clean white borders
+// Light mode: frosted white glass with subtle blur
 export function glassStyle({ accentHex = '#5c6bc0', isDark = true, radius = 22, glassOpacity = 1.0 } = {}) {
-  const go   = Math.max(0, glassOpacity)
-  const cast = isDark ? 0.52 : 0.12
+  const go = Math.max(0, glassOpacity)
   return {
     background: isDark
-      ? `linear-gradient(155deg, rgba(255,255,255,${(0.11  * go).toFixed(3)}) 0%, rgba(255,255,255,${(0.055 * go).toFixed(3)}) 42%, rgba(255,255,255,${(0.022 * go).toFixed(3)}) 100%)`
-      : `linear-gradient(155deg, rgba(255,255,255,${Math.min(1, 0.95 * go).toFixed(3)}) 0%, rgba(255,255,255,${Math.min(1, 0.85 * go).toFixed(3)}) 42%, rgba(255,255,255,${Math.min(1, 0.78 * go).toFixed(3)}) 100%)`,
-    // Only blur in dark mode — light mode background is already opaque white
-    backdropFilter:       isDark ? 'blur(24px) saturate(1.6)' : 'none',
-    WebkitBackdropFilter: isDark ? 'blur(24px) saturate(1.6)' : 'none',
+      ? `rgba(255,255,255,${(0.07 * go).toFixed(3)})`  // dark panel on black bg
+      : `linear-gradient(175deg,
+          rgba(255,255,255,${Math.min(1, 0.92 * go).toFixed(3)}) 0%,
+          rgba(240,244,255,${Math.min(1, 0.80 * go).toFixed(3)}) 100%)`,
+    backdropFilter:       isDark ? 'blur(16px) saturate(1.4)' : 'blur(20px) saturate(1.8) brightness(1.02)',
+    WebkitBackdropFilter: isDark ? 'blur(16px) saturate(1.4)' : 'blur(20px) saturate(1.8) brightness(1.02)',
     borderRadius: radius,
-    border: `1px solid ${isDark ? 'rgba(255,255,255,0.13)' : 'rgba(200,205,230,0.80)'}`,
-    boxShadow: [
-      `0 36px 80px -20px rgba(0,0,30,${cast})`,
-      `0 16px 36px -10px rgba(0,0,30,${cast * 0.60})`,
-      `0 5px 14px -4px rgba(0,0,30,${cast * 0.36})`,
-      `inset 0 1.5px 0 rgba(255,255,255,${isDark ? 0.18 : 0.98})`,
-      `inset 0 -1.5px 0 rgba(0,0,30,${isDark ? 0.32 : 0.07})`,
-      `inset 1.5px 0 0 rgba(255,255,255,${isDark ? 0.09 : 0.68})`,
-      `inset -1.5px 0 0 rgba(0,0,30,${isDark ? 0.15 : 0.04})`,
-      `0 0 48px -8px ${accentHex}${isDark ? '38' : '18'}`,
+    border: `1px solid ${isDark ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.95)'}`,
+    boxShadow: isDark ? [
+      `inset 0 1px 0 rgba(255,255,255,0.12)`,       // top edge highlight
+      `0 1px 0 rgba(255,255,255,0.04)`,
+      `0 8px 32px rgba(0,0,0,0.50)`,
+      `0 2px 8px rgba(0,0,0,0.35)`,
+      `0 0 0 1px rgba(255,255,255,0.04)`,
+    ].join(', ') : [
+      `inset 0 2px 0 rgba(255,255,255,1.0)`,
+      `0 8px 32px rgba(0,0,30,0.12)`,
+      `0 2px 8px rgba(0,0,30,0.07)`,
+      `0 0 40px -8px ${accentHex}28`,
     ].join(', '),
     position: 'relative',
     overflow: 'hidden',
@@ -84,19 +84,13 @@ export function liquidButtonStyle({ accentHex = '#3949AB', hue = 262, isDark = t
 }
 
 // ─── Dark theme constants ────────────────────────────────
+// Claude Code style: pure black, white text, no decorative orbs
 export const DARK = {
   name:      'dark',
-  bg:        '#05061a',
-  text:      { primary: '#f0f1ff', secondary: 'rgba(220,222,255,0.65)', muted: 'rgba(180,185,240,0.38)', code: '#a78bfa' },
+  bg:        '#0a0a0a',
+  text:      { primary: '#ffffff', secondary: 'rgba(255,255,255,0.65)', muted: 'rgba(255,255,255,0.35)', code: '#a78bfa' },
   divider:   'rgba(255,255,255,0.08)',
-  orbs: [
-    // Dark mode orbs mirror light mode — just above bg lightness (~0.08), very low chroma, minimal blur
-    // bg ≈ oklch(0.08 0.04 262); orbs at L 0.17–0.22 give subtle depth without any glow
-    { hue: 262, L: 0.20, C: 0.07, size: 520, x: '-10%', y: '-12%', anim: 'orbDrift1', dur: '22s', blur: 12 },
-    { hue: 302, L: 0.17, C: 0.06, size: 420, x: '78%',  y: '-8%',  anim: 'orbDrift2', dur: '19s', blur: 9 },
-    { hue: 222, L: 0.22, C: 0.05, size: 320, x: '8%',   y: '68%',  anim: 'orbDrift3', dur: '16s', blur: 7 },
-    { hue: 342, L: 0.18, C: 0.05, size: 270, x: '84%',  y: '72%',  anim: 'orbDrift4', dur: '20s', blur: 6 },
-  ],
+  orbs:      [],  // no orbs in dark mode — clean black background
 }
 
 export const LIGHT = {
@@ -122,17 +116,16 @@ export const LIGHT = {
  *   <div style={refractionEdge({ isDark, radius: 22, side: 'right' })} />
  */
 export function refractionEdge({ isDark = true, radius = 22, side = 'right' } = {}) {
-  const dim = 2
   const baseRadius = `0 ${radius}px ${radius}px 0`
   const leftRadius = `${radius}px 0 0 ${radius}px`
   return {
     position: 'absolute',
     top: 0, bottom: 0,
     ...(side === 'right' ? { right: 0, borderRadius: baseRadius } : { left: 0, borderRadius: leftRadius }),
-    width: dim,
+    width: 4,
     background: side === 'right'
-      ? 'linear-gradient(180deg, rgba(255,0,200,0.18) 0%, rgba(0,220,255,0.18) 100%)'
-      : 'linear-gradient(180deg, rgba(0,220,255,0.14) 0%, rgba(255,0,200,0.14) 100%)',
+      ? 'linear-gradient(180deg, rgba(255,20,220,0.38) 0%, rgba(120,220,255,0.28) 50%, rgba(0,200,255,0.38) 100%)'
+      : 'linear-gradient(180deg, rgba(0,220,255,0.32) 0%, rgba(180,120,255,0.22) 50%, rgba(255,20,220,0.32) 100%)',
     mixBlendMode: isDark ? 'screen' : 'multiply',
     pointerEvents: 'none',
     zIndex: 2,

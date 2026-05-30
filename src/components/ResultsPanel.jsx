@@ -288,12 +288,8 @@ export default function ResultsPanel({
         borderLeft: `4px solid ${isFollowUp ? accentFollow : (isDark ? 'rgba(52,211,153,0.70)' : '#2E7D32')}`,
         overflow: 'hidden',
       }}>
-        {/* Top curved highlight */}
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, height: '40%',
-          background: 'radial-gradient(ellipse 90% 100% at 50% 0%, rgba(255,255,255,0.14) 0%, transparent 100%)',
-          borderRadius: '16px 16px 0 0', pointerEvents: 'none', zIndex: 1,
-        }} />
+        {/* Top specular highlight + chromatic fringing */}
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:7, background:'linear-gradient(180deg, rgba(255,255,255,0.75) 0%, transparent 100%)', borderRadius:'16px 16px 0 0', pointerEvents:'none', zIndex:3 }} />
         <div style={{ position: 'relative', zIndex: 3 }}>
 
           {/* ── Meta bar + tabs ── */}

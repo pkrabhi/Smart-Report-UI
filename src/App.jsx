@@ -50,9 +50,10 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false)
   const [module, setModule]           = useState('ENGINEERING')
   const [activeTab, setActiveTab]     = useState('query')
-  const [question, setQuestion]       = useState('')
-  const [filters, setFilters]         = useState({})
-  const [followUpCtx, setFollowUpCtx] = useState(null)
+  const [question, setQuestion]         = useState('')
+  const [rootQuestion, setRootQuestion] = useState('')
+  const [filters, setFilters]           = useState({})
+  const [followUpCtx, setFollowUpCtx]   = useState(null)
   const [history, setHistory]         = useState(loadHistory)
   const [favorites, setFavorites]     = useState(loadFavorites)
   const [showFeedback, setShowFeedback] = useState(false)
@@ -122,14 +123,16 @@ export default function App() {
   const handleSubmit = () => {
     if (!question.trim()) return
     setFollowUpCtx(null)
+    setRootQuestion(question)   // anchor the root for follow-up chains
     runQuery({ question, moduleCode: module, userId: settings.userId, filters })
   }
-  const handleModuleChange = (mod) => { setModule(mod); setFilters({}); setFollowUpCtx(null); reset(); setActiveTab('query') }
-  const handleReplay = (entry) => { setModule(entry.moduleCode); setQuestion(entry.question); setFilters({}); setFollowUpCtx(null); reset(); setActiveTab('query') }
+  const handleModuleChange = (mod) => { setModule(mod); setFilters({}); setFollowUpCtx(null); setRootQuestion(''); reset(); setActiveTab('query') }
+  const handleReplay = (entry) => { setModule(entry.moduleCode); setQuestion(entry.question); setRootQuestion(entry.question); setFilters({}); setFollowUpCtx(null); reset(); setActiveTab('query') }
   const handleSaveSettings = (s) => { setSettings(s); saveSettings(s) }
   const handlePdfExport = async () => {
     if (!result) return
-    await exportPdf({ apiBase: settings.apiBase, columns: result.columns, data: result.data, question, moduleCode: module, queryId: result.queryId, source: result.source, executionTimeMs: result.executionTimeMs, generatedSql: result.generatedSql })
+    // Use rootQuestion for the filename so follow-up PDFs are named after the original query
+    await exportPdf({ apiBase: settings.apiBase, columns: result.columns, data: result.data, question: rootQuestion || question, moduleCode: module, queryId: result.queryId, source: result.source, executionTimeMs: result.executionTimeMs, generatedSql: result.generatedSql })
   }
 
   const showPipeline = loading || result || error
@@ -189,37 +192,27 @@ export default function App() {
           }} />
         ))}
 
-        {/* Caustic noise overlay */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: isDark
-            ? 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.75\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'1\'/%3E%3C/svg%3E")'
-            : 'none',
-          opacity: 0.045,
-          mixBlendMode: isDark ? 'screen' : 'multiply',
-        }} />
-
-        {/* Perspective grid layer — toggled by tweaks */}
-        {tweaks.showGrid && (
+        {/* Perspective grid layer — toggled by tweaks (light mode only useful) */}
+        {tweaks.showGrid && !isDark && (
           <div style={{
             position: 'absolute', inset: 0,
             backgroundImage: perspectiveGridBg(isDark),
             backgroundSize: '60px 60px',
-            opacity: isDark ? 0.10 : 0.14,
+            opacity: 0.14,
             maskImage: 'radial-gradient(ellipse 85% 70% at 50% 45%, black 30%, transparent 100%)',
             WebkitMaskImage: 'radial-gradient(ellipse 85% 70% at 50% 45%, black 30%, transparent 100%)',
             pointerEvents: 'none',
           }} />
         )}
 
-        {/* Radial vignette top */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: isDark
-            ? 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(5,6,26,0) 0%, rgba(5,6,26,0.55) 100%)'
-            : 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(238,240,249,0) 0%, rgba(238,240,249,0.4) 100%)',
-          pointerEvents: 'none',
-        }} />
+        {/* Light mode vignette only */}
+        {!isDark && (
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(238,240,249,0) 0%, rgba(238,240,249,0.4) 100%)',
+            pointerEvents: 'none',
+          }} />
+        )}
       </div>
 
       {/* ── Page Content ── */}
@@ -332,18 +325,43 @@ export default function App() {
         @keyframes floatY     { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
         @keyframes pulseDot   { 0%,100%{box-shadow:0 0 0 0 currentColor} 50%{box-shadow:0 0 0 4px transparent} }
 
-        /* ── Glass sheen sweep ── */
+        /* ── Glass sheen sweep (iPhone 17 style — sharp, bright, fast) ── */
         @keyframes glassSheen {
-          0%   { left: -110%; opacity: 0;   }
-          8%   { opacity: 1;                }
-          38%  { left:  130%; opacity: 0;   }
-          100% { left:  130%; opacity: 0;   }
+          0%   { left: -120%; opacity: 0; }
+          6%   { opacity: 1; }
+          34%  { left:  145%; opacity: 0; }
+          100% { left:  145%; opacity: 0; }
         }
         .glass-sheen {
-          position: absolute; top: -20%; width: 52%; height: 140%;
-          background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%);
-          animation: glassSheen 8s ease-in-out infinite;
-          pointer-events: none; border-radius: inherit; z-index: 1;
+          position: absolute; top: -30%; width: 42%; height: 160%;
+          background: linear-gradient(108deg,
+            transparent 0%,
+            rgba(255,255,255,0.03) 28%,
+            rgba(255,255,255,0.10) 50%,
+            rgba(255,255,255,0.03) 72%,
+            transparent 100%);
+          animation: glassSheen 10s ease-in-out infinite;
+          pointer-events: none; border-radius: inherit; z-index: 2;
+        }
+
+        /* ── Caustic light drift — the moving bright spot inside glass ── */
+        @keyframes causticDrift {
+          0%,100% { transform: translate(0%, 0%) scale(1);    opacity: 0.55; }
+          25%     { transform: translate(18%, -12%) scale(1.15); opacity: 0.70; }
+          50%     { transform: translate(-10%, 16%) scale(0.92); opacity: 0.48; }
+          75%     { transform: translate(22%, 8%)  scale(1.08); opacity: 0.62; }
+        }
+        .glass-caustic {
+          position: absolute;
+          top: 12%; left: 20%;
+          width: 50%; height: 38%;
+          background: radial-gradient(ellipse 60% 70% at 50% 40%,
+            rgba(255,255,255,0.10) 0%,
+            rgba(255,255,255,0.03) 55%,
+            transparent 100%);
+          animation: causticDrift 9s ease-in-out infinite;
+          pointer-events: none; border-radius: 50%; z-index: 1;
+          filter: blur(10px);
         }
 
         /* ── Liquid water ripple ── */
