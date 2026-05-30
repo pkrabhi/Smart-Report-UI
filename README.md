@@ -1,254 +1,162 @@
-# KMC Smart Query UI — v2.0
+# Smart Query — Frontend UI
 
-> AI-Powered Natural Language to SQL — React Frontend for Market & Engineering Modules
+> Liquid glass React interface for KMC's AI-powered ERP query engine
+
+![React](https://img.shields.io/badge/React-18-blue) ![Vite](https://img.shields.io/badge/Vite-5.x-purple) ![JavaScript](https://img.shields.io/badge/JavaScript-ES2022-yellow)
 
 ---
 
-## 🚀 Quick Start
+## Overview
+
+Smart Query UI is the frontend for KMC's AI-powered ERP querying system. It provides a conversational interface where users type plain-English questions and instantly see SQL results, charts, and AI-generated insights — without needing to know SQL or navigate complex ERP screens.
+
+The UI features a **liquid glass** design system with full dark/light theme support, real-time pipeline tracking, and a suite of power-user tools including voice input, keyboard shortcuts, schema explorer, and PDF export.
+
+---
+
+## Features
+
+| Feature | Description |
+|---|---|
+| Natural Language Input | Ask questions in plain English with autocomplete |
+| Voice Input | Speak your query using the browser microphone |
+| Real-time Pipeline Tracker | Live step-by-step view of NL → SQL → Results |
+| Streaming SQL Preview | Watch the SQL being generated token by token |
+| Chart Panel | Auto-renders bar, line, pie, scatter, and area charts |
+| Insight Cards | AI-generated summary and key takeaways per query |
+| Follow-up Queries | Continue the conversation with context-aware follow-ups |
+| Schema Explorer | Browse all tables and columns for the active module |
+| Query History | View, re-run, and favourite past queries |
+| Feedback Modal | Rate each result to improve the AI over time |
+| PDF Export | Download a formatted report with KMC letterhead |
+| Keyboard Shortcuts | Full keyboard navigation for power users |
+| Module Wheel | Switch between Market and Engineering ERP modules |
+| Tweaks Panel | 6 persistent UI controls (density, animations, font size, etc.) |
+| Service Status | Live health dashboard for all backend services |
+| RBAC Login | Role-based access — analyst, manager, admin views |
+| Liquid Glass Design | Glassmorphism UI with smooth animations |
+| Dark / Light Theme | Fully themed, persisted per user preference |
+| Responsive Layout | Works on desktop and large tablets |
+
+---
+
+## Tech Stack
+
+- **Framework:** React 18
+- **Build tool:** Vite 5
+- **Charts:** Recharts
+- **Styling:** Custom CSS (liquid glass design system, no CSS framework dependency)
+- **State:** React hooks + localStorage persistence
+- **API:** Fetch + EventSource (SSE for streaming)
+
+---
+
+## Project Structure
+
+```
+src/
+├── App.jsx                         # Root app, routing, theme provider
+├── config/
+│   └── theme.js                    # Design tokens — colors, glass, spacing
+├── utils/
+│   └── api.js                      # All backend API calls
+└── components/
+    ├── LoginScreen.jsx             # RBAC login page
+    ├── Header.jsx                  # Top bar with module selector and user info
+    ├── NavTabs.jsx                 # Tab navigation (Query / History / Status)
+    ├── ModuleWheel.jsx             # Market ↔ Engineering module switcher
+    ├── QueryInput.jsx              # NL query input with voice + autocomplete
+    ├── AutocompleteDropdown.jsx    # Suggestion dropdown for query input
+    ├── PipelineTracker.jsx         # Real-time step tracker (NL→SQL→Execute→Chart)
+    ├── StreamingSqlPreview.jsx     # Live SQL token stream display
+    ├── ResultsPanel.jsx            # Table + pagination for query results
+    ├── ChartPanel.jsx              # Auto chart renderer (bar/line/pie/scatter)
+    ├── InsightCard.jsx             # AI insight summary card
+    ├── FollowUpInput.jsx           # Follow-up query input
+    ├── WorkflowSummary.jsx         # End-of-query summary stats
+    ├── RagStatsBadge.jsx           # RAG pipeline stats (tokens, latency)
+    ├── SchemaExplorer.jsx          # Browsable schema tree
+    ├── HistoryTab.jsx              # Query history list with re-run + favourite
+    ├── ServiceStatusTab.jsx        # Backend service health grid
+    ├── FeedbackModal.jsx           # Thumbs up/down + comment form
+    ├── SettingsModal.jsx           # User preferences modal
+    ├── TweaksPanel.jsx             # 6 persistent UI tweak controls
+    ├── KeyboardShortcutsModal.jsx  # Keyboard shortcut reference
+    ├── StatusBar.jsx               # Bottom status bar
+    ├── Toast.jsx                   # Notification toasts
+    └── ErrorCard.jsx               # Error display component
+```
+
+---
+
+## Prerequisites
+
+- Node.js 18+
+- Smart Query Backend running (see [smart-query-node](https://github.com/pkrabhi/smart-query-node))
+
+---
+
+## Setup & Run
 
 ```bash
 # 1. Install dependencies
 npm install
 
-# 2. Start dev server (runs on port 3000)
+# 2. Configure environment
+cp .env.example .env
+# Set VITE_API_BASE to your backend URL, e.g. http://localhost:3001
+
+# 3. Start development server
 npm run dev
 
-# 3. Open browser
-http://localhost:3000
-```
-
-> ⚠️ Make sure your Node.js backend is running on **port 8101** before starting the UI.
-> The Vite proxy automatically forwards `/api/*` → `http://localhost:8101/smart-query-service/api/*`
-
----
-
-## 📁 Project Structure
-
-```
-smart-query-ui-v2/
-├── index.html                    ← Entry HTML (loads Google Fonts + root div)
-├── vite.config.js                ← Vite config + proxy setup
-├── package.json
-├── .env.example                  ← Environment variable template
-│
-└── src/
-    ├── main.jsx                  ← ReactDOM.createRoot
-    ├── App.jsx                   ← Root component — wires all state together
-    │
-    ├── config/
-    │   └── modules.js            ← ALL module config: filters, suggestions, colors, stats
-    │
-    ├── utils/
-    │   └── api.js                ← All fetch calls + localStorage helpers
-    │
-    ├── hooks/
-    │   ├── useSmartQuery.js      ← Core query hook (submit → pipeline → result)
-    │   └── useServiceStatus.js   ← Polls /status every 30s
-    │
-    └── components/
-        ├── Header.jsx            ← Top nav: logo, module toggle, status, history, settings
-        ├── ModuleInfoBar.jsx     ← Schema strip: active module, schema name, stats
-        ├── QueryInput.jsx        ← Textarea, suggestions, filters panel, submit button
-        ├── PipelineTracker.jsx   ← Animated 4-step processing pipeline
-        ├── ResultsPanel.jsx      ← Table (sortable), SQL viewer, Info tab
-        ├── HistorySidebar.jsx    ← Last 30 queries, click to replay
-        ├── SettingsModal.jsx     ← API URL, User ID, max rows, service status
-        ├── ErrorCard.jsx         ← Error display with contextual tips
-        └── StatusBar.jsx         ← Fixed bottom bar: service health + active module
-```
-
----
-
-## 🔌 API Integration
-
-All API calls are in `src/utils/api.js`. The endpoints map to your Node.js service:
-
-| Function | Method | Endpoint | Purpose |
-|---|---|---|---|
-| `askQuery()` | POST | `/api/smart-query/ask` | Submit NL question → get SQL + results |
-| `fetchStatus()` | GET | `/api/smart-query/status` | Check NVIDIA/Ollama availability |
-| `fetchHealth()` | GET | `/actuator/health` | Service health check |
-| `exportCsv()` | POST | `/api/smart-query/export-csv` | Download results as CSV |
-
-### Request Payload (`askQuery`)
-
-```json
-{
-  "question":    "show all active tenders",
-  "moduleCode":  "ENGINEERING",
-  "userId":      "erp_user",
-
-  // Engineering optional filters:
-  "fileNo":         "FILE-2025-001",
-  "tenderNo":       "TND-001",
-  "poNumber":       "PO-001",
-  "deptCode":       "CIVIL",
-  "borough":        "NORTH",
-  "wardNo":         "5",
-
-  // Market optional filters:
-  "marketCode":     "101",
-  "phaseCode":      "01",
-  "blockCode":      "A",
-  "stallId":        "1010105",
-  "finYear":        "2526"
-}
-```
-
-### Response Shape
-
-```json
-{
-  "success":         true,
-  "queryId":         "ENGG-20260401-00003",
-  "moduleCode":      "ENGINEERING",
-  "generatedSql":    "SELECT tender_no, ... FROM public.engg_est_tender_master WHERE c_status = 1 LIMIT 5000",
-  "columns":         ["tender_no", "tender_type", "status_description"],
-  "data":            [{ "tender_no": "TND-001", ... }],
-  "rowCount":        248,
-  "source":          "NVIDIA NIM",
-  "executionTimeMs": 27950
-}
-```
-
----
-
-## 🎛️ Supported Modules
-
-### 🏪 Market Module
-- **moduleCode:** `MARKET`
-- **Schema:** `mrkt_kmc2_data`
-- **Tables:** 30 | **Examples:** 42 | **Rules:** 33
-- **Query ID prefix:** `MKT-YYYYMMDD-NNNNN`
-- **Filters:** marketCode, phaseCode, blockCode, stallId, wardNo, finYear
-
-### 🏗️ Engineering Module
-- **moduleCode:** `ENGINEERING`
-- **Schema:** `public`
-- **Tables:** 34 | **Examples:** 44 | **Rules:** 34
-- **Query ID prefix:** `ENGG-YYYYMMDD-NNNNN`
-- **Filters:** fileNo, tenderNo, poNumber, deptCode, borough, wardNo
-
----
-
-## ⚙️ Configuration
-
-### Vite Proxy (default)
-```js
-// vite.config.js — proxies /api/* to your backend
-proxy: {
-  '/api': {
-    target: 'http://localhost:8101',
-    rewrite: (path) => path.replace(/^\/api/, '/smart-query-service/api'),
-  }
-}
-```
-
-### Environment Variables
-Copy `.env.example` to `.env` and update values:
-```bash
-cp .env.example .env
-```
-
-```env
-VITE_API_BASE=/api/smart-query
-VITE_SERVICE_HOST=localhost
-VITE_SERVICE_PORT=8101
-```
-
-### Change Backend Host
-If your Node.js service is on a different server, update the proxy target in `vite.config.js`:
-```js
-target: 'http://192.168.0.132:8101',   // ← your server IP
-```
-
-Or change the API base URL in the Settings panel at runtime (⚙️ button in header).
-
----
-
-## 🏗️ Building for Production
-
-```bash
+# 4. Build for production
 npm run build
+npm run preview
 ```
 
-Output goes to `dist/`. Deploy the `dist/` folder to your web server (Nginx, Apache, etc).
-
-**Nginx config example:**
-```nginx
-server {
-    listen 80;
-    root /var/www/smart-query-ui/dist;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # Proxy API calls to Node.js backend
-    location /api/ {
-        proxy_pass http://localhost:8101/smart-query-service/api/;
-        proxy_set_header Host $host;
-        proxy_read_timeout 120s;
-    }
-
-    location /actuator/ {
-        proxy_pass http://localhost:8101/smart-query-service/actuator/;
-    }
-}
-```
+Vite dev server runs on **http://localhost:5173** by default.
 
 ---
 
-## 💡 Adding a New Module
+## Environment Variables
 
-1. Add entry to `src/config/modules.js`:
-```js
-HEALTH: {
-  key: 'HEALTH',
-  label: 'Health Module',
-  schema: 'hlth_kmc4_data',
-  queryIdPrefix: 'HLTH',
-  emoji: '🏥',
-  accentColor: '#7C3AED',
-  // ... add filters and suggestions
-}
-```
-
-2. Create context files in your Node.js backend:
-```
-src/resources/smartquery/health/
-  ├── schema_context.json
-  ├── alias_mapping.json
-  └── few_shot_examples.json
-```
-
-3. Add `HEALTH` to `MODULE_PREFIX` in `orchestrator.js` — done! ✅
-
----
-
-## 📦 Dependencies
-
-| Package | Version | Purpose |
-|---|---|---|
-| react | ^18.2 | UI framework |
-| react-dom | ^18.2 | DOM rendering |
-| lucide-react | ^0.263 | Icons (optional) |
-| vite | ^4.4 | Build tool + dev server |
-| @vitejs/plugin-react | ^4.0 | React HMR support |
-
----
-
-## 🔧 Troubleshooting
-
-| Problem | Solution |
+| Variable | Description |
 |---|---|
-| `Connection error: Failed to fetch` | Start Node.js backend: `npm start` in `smart-query-node-v2/` |
-| `HTTP 404` on API calls | Check proxy config in `vite.config.js` |
-| AI not responding | Check NVIDIA API key in backend `.env` |
-| CORS errors | Use Vite proxy (default) instead of direct URL |
-| Blank page after build | Set `base` in `vite.config.js` if deployed in a subdirectory |
+| `VITE_API_BASE` | Backend API base URL (e.g. `http://localhost:3001`) |
 
 ---
 
-*KMC Engineering Team · 2026*
+## Design System
+
+The UI uses a custom **liquid glass** design system defined in [`src/config/theme.js`](src/config/theme.js):
+
+- **Glass layers:** backdrop-filter blur with layered transparency
+- **Tokens:** colors, spacing, border-radius, shadow, animation duration
+- **Themes:** `dark` (default) and `light` — toggled at runtime, persisted to localStorage
+- **Typography:** Inter / system font stack, fluid sizing
+- **Animations:** Subtle entrance transitions, shimmer loaders, pipeline step pulses
+
+---
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|---|---|
+| `Ctrl + Enter` | Submit query |
+| `Ctrl + K` | Focus query input |
+| `Ctrl + H` | Open history |
+| `Ctrl + E` | Open schema explorer |
+| `Ctrl + /` | Show keyboard shortcuts |
+| `Escape` | Close modals |
+
+---
+
+## Related
+
+- **Backend:** [pkrabhi/smart-query-node](https://github.com/pkrabhi/smart-query-node)
+
+---
+
+## License
+
+Internal — KMC Engineering Team. Not for public distribution.
